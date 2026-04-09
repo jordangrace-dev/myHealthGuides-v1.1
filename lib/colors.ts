@@ -1,0 +1,16 @@
+export const COLORS = {
+  sageLt: '#C8D8C0',
+  sage: '#87A878',
+  sageMd: '#6B8F5E',
+  moss: '#4A6741',
+  mossDark: '#3D5C32',
+  sienna: '#C4622D',
+  siennaLt: '#E8956A',
+  warmWhite: '#F8F6F2',
+  warmGrey100: '#F0EDE8',
+  warmGrey200: '#E2DDD6',
+  warmGrey400: '#A09C96',
+  warmGrey600: '#6B6866',
+  warmGrey800: '#3A3836',
+  white: '#FFFFFF',
+};
