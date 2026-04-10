@@ -1,6 +1,6 @@
 # myHealthGuides v1.1
 
-*A few seconds a day. One insight at a time.*
+*Track less, learn more. Build your healthcare playbook one insight at a time.*
 
 ## Overview
 **myHealthGuides** is a React Native Expo application designed to help individuals capture daily health signals, recognize meaningful patterns, and prepare for more productive conversations with their healthcare providers.
