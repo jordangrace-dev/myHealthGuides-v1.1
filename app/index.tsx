@@ -28,8 +28,7 @@ import VisitScreenNew from "./Screens/VisitScreen";
 import { DEFAULT_MEDS } from '../lib/defaultMeds';
 import { BASE_VISIT_QUESTIONS } from '../lib/visitQuestions';
 import { COLORS } from '../lib/colors';
-type Screen = 'home' | 'signals' | 'insight' | 'medications' | 'visit';
-
+import { Screen, MedState, MedGroup, MedItem } from "../types";
 
 
 type TabItem = { key: Screen; label: string };
