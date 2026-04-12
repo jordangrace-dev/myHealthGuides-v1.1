@@ -25,10 +25,12 @@ import SignalsScreen from "./Screens/SignalsScreen";
 import InsightScreenNew from "./Screens/InsightScreen";
 import MedicationScreenNew from "./Screens/MedicationScreen";
 import VisitScreenNew from "./Screens/VisitScreen";
+import TabBar from "./components/TabBar";
 import { DEFAULT_MEDS } from '../lib/defaultMeds';
 import { BASE_VISIT_QUESTIONS } from '../lib/visitQuestions';
 import { COLORS } from '../lib/colors';
-import { Screen, MedState, MedGroup, MedItem } from "../types";
+import { Screen, MedState, MedGroup, MedItem} from "../types";
+
 
 
 type TabItem = { key: Screen; label: string };
@@ -40,75 +42,6 @@ const TABS: TabItem[] = [
   { key: 'visit', label: 'Visit' },
 ];
 
-function TabBar({ active, onPress }: { active: Screen; onPress: (s: Screen) => void }) {
-  const icons: Record<Screen, string> = {
-    home: '⌂',
-    signals: '◎',
-    insight: '✦',
-    medications: '⊕',
-    visit: '✉',
-  };
-  return (
-    <View style={tabStyles.bar}>
-      {TABS.map((tab) => {
-        const isActive = tab.key === active;
-        return (
-          <TouchableOpacity
-            key={tab.key}
-            style={tabStyles.tabItem}
-            onPress={() => onPress(tab.key)}
-            activeOpacity={0.7}
-          >
-            <Text style={[tabStyles.icon, isActive && tabStyles.activeIcon]}>
-              {icons[tab.key]}
-            </Text>
-            <Text style={[tabStyles.label, isActive && tabStyles.activeLabel]}>
-              {tab.label}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
-    </View>
-  );
-}
-
-const tabStyles = StyleSheet.create({
-  bar: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.white,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.warmGrey200,
-    paddingBottom: Platform.OS === 'ios' ? 20 : 8,
-    paddingTop: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  tabItem: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 3,
-  },
-  icon: {
-    fontSize: 18,
-    color: COLORS.warmGrey400,
-    lineHeight: 22,
-  },
-  activeIcon: {
-    color: COLORS.sageMd,
-  },
-  label: {
-    fontSize: 11,
-    color: COLORS.warmGrey400,
-    fontWeight: '500',
-  },
-  activeLabel: {
-    color: COLORS.sageMd,
-    fontWeight: '700',
-  },
-});
 
 function Card({ children, style }: { children: React.ReactNode; style?: object }) {
   return <View style={[cardStyles.card, style]}>{children}</View>;
@@ -710,7 +643,7 @@ const sharedStyles = StyleSheet.create({
 
 
 export default function MyMedGuide() {
-  const [screen, setScreen] = useState<Screen>('home');
+  const [active, setActive] = React.useState<Screen>("home");
   const [signalsSaved, setSignalsSaved] = useState<Record<string, string>>({});
   const [symptoms, setSymptoms] = useState<Record<string, boolean>>({});
   const [meds, setMeds] = useState(DEFAULT_MEDS);
@@ -755,8 +688,8 @@ export default function MyMedGuide() {
 
 
     <RNStatusBar barStyle="dark-content" />
-    <View style={appStyles.content}>{screens[screen]}</View>
-    <TabBar active={screen} onPress={setScreen} />
+    <View style={appStyles.content}>{screens[active]}</View>
+    <TabBar active={active} onPress={setActive} tabs={TABS} />
   </SafeAreaView>
 );
 }
