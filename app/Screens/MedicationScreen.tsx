@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
+import { DEFAULT_MEDS } from "../../lib/defaultMeds";
 
 type Medication = {
   name: string;
@@ -18,9 +19,10 @@ type Medication = {
 
 type MedicationScreenProps = {
   meds: Medication[];
+  setMeds: React.Dispatch<React.SetStateAction<Medication[]>>;
 };
 
-export default function MedicationScreen({ meds }: MedicationScreenProps) {
+export default function MedicationScreen({ meds, setMeds }: MedicationScreenProps) {
   return (
   <View style={styles.container}>
     <Text style={styles.title}>Medications</Text>
@@ -28,7 +30,23 @@ export default function MedicationScreen({ meds }: MedicationScreenProps) {
       {meds.length} medication{meds.length !== 1 ? "s" : ""} tracked.
     </Text>
     
-    <Button title="Add Medication" onPress={() => {}} />
+    <Button
+  title="Add Medication"
+  onPress={() =>
+    setMeds((prev) => [
+      ...prev,
+      {
+        name: "New Medication",
+        dose: "10 mg",
+        instruction: "Take once daily",
+        doses: [],
+        reminderOn: false,
+        reminderTime: "8:00 AM",
+        showPreview: false,
+      },
+    ])
+  }
+/>
 
     {meds.map((med, index) => (
       <View key={index} style={styles.medCard}>
@@ -65,11 +83,7 @@ medCard: {
   shadowRadius: 2,
   elevation: 2,
 },
-medName: {
-  fontSize: 18,
-  fontWeight: "600",
-  marginBottom: 4,
-},
+medName: { fontSize: 18, fontWeight: "600", marginBottom: 4 },
 medDetail: {
   fontSize: 14,
   color: "darkgray",
