@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, StyleSheet, Button, TextInput } from "react-native";
 import { DEFAULT_MEDS } from "../../lib/defaultMeds";
 
 type Medication = {
@@ -23,40 +23,62 @@ type MedicationScreenProps = {
 };
 
 export default function MedicationScreen({ meds, setMeds }: MedicationScreenProps) {
+const [newName, setNewName] = React.useState("");
+const [newDose, setNewDose] = React.useState("");
+const [newInstruction, setNewInstruction] = React.useState("");
   return (
-  <View style={styles.container}>
-    <Text style={styles.title}>Medications</Text>
-    <Text style={styles.subtitle}>
-      {meds.length} medication{meds.length !== 1 ? "s" : ""} tracked.
-    </Text>
-    
-    <Button
-  title="Add Medication"
-  onPress={() =>
-    setMeds((prev) => [
-      ...prev,
-      {
-        name: "New Medication",
-        dose: "10 mg",
-        instruction: "Take once daily",
-        doses: [],
-        reminderOn: false,
-        reminderTime: "8:00 AM",
-        showPreview: false,
-      },
-    ])
-  }
+    <View style={styles.container}>
+      <Text style={styles.title}>Medications</Text>
+      <Text style={styles.subtitle}>
+        {meds.length} medication{meds.length !== 1 ? "s" : ""} tracked.
+      </Text>
+<TextInput
+  style={styles.input}
+  placeholder="Medication Name"
+  value={newName}
+  onChangeText={setNewName}
 />
 
-    {meds.map((med, index) => (
-      <View key={index} style={styles.medCard}>
-        <Text style={styles.medName}>{med.name}</Text>
-        <Text style={styles.medDetail}>Dose: {med.dose}</Text>
-        <Text style={styles.medDetail}>Instruction: {med.instruction}</Text>
-      </View>
-    ))}
-  </View>
-);
+<TextInput
+  style={styles.input}
+  placeholder="Dose (e.g., 10 mg)"
+  value={newDose}
+  onChangeText={setNewDose}
+/>
+
+<TextInput
+  style={styles.input}
+  placeholder="Instructions (e.g., Take once daily)"
+  value={newInstruction}
+  onChangeText={setNewInstruction}
+/>
+      <Button
+        title="Add Medication"
+        onPress={() =>
+          setMeds((prev) => [
+            ...prev,
+            {
+              name: "New Medication",
+              dose: "10 mg",
+              instruction: "Take once daily",
+              doses: [],
+              reminderOn: false,
+              reminderTime: "8:00 AM",
+              showPreview: false,
+            },
+          ])
+        }
+      />
+
+      {meds.map((med, index) => (
+        <View key={index} style={styles.medCard}>
+          <Text style={styles.medName}>{med.name}</Text>
+          <Text style={styles.medDetail}>Dose: {med.dose}</Text>
+          <Text style={styles.medDetail}>Instruction: {med.instruction}</Text>
+        </View>
+      ))}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -68,24 +90,32 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 10,
   },
-subtitle: {
-  fontSize: 16,
-  color: "gray",
+  input: {
+  borderWidth: 1,
+  borderColor: "#ccc",
+  borderRadius: 6,
+  padding: 10,
+  marginTop: 10,
+  backgroundColor: "#fff",
 },
-medCard: {
-  backgroundColor: "white",
-  padding: 12,
-  borderRadius: 8,
-  marginTop: 12,
-  shadowColor: "black",
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.1,
-  shadowRadius: 2,
-  elevation: 2,
-},
-medName: { fontSize: 18, fontWeight: "600", marginBottom: 4 },
-medDetail: {
-  fontSize: 14,
-  color: "darkgray",
-},
+  subtitle: {
+    fontSize: 16,
+    color: "gray",
+  },
+  medCard: {
+    backgroundColor: "white",
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 12,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  medName: { fontSize: 18, fontWeight: "600", marginBottom: 4 },
+  medDetail: {
+    fontSize: 14,
+    color: "darkgray",
+  },
 });
