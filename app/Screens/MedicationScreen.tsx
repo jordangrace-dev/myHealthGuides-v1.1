@@ -54,21 +54,27 @@ const [newInstruction, setNewInstruction] = React.useState("");
 />
       <Button
         title="Add Medication"
-        onPress={() =>
-          setMeds((prev) => [
-            ...prev,
-            {
-              name: "New Medication",
-              dose: "10 mg",
-              instruction: "Take once daily",
-              doses: [],
-              reminderOn: false,
-              reminderTime: "8:00 AM",
-              showPreview: false,
-            },
-          ])
-        }
-      />
+onPress={() => {
+  if (!newName.trim()) return;
+
+  setMeds((prev) => [
+    ...prev,
+    {
+      name: newName,
+      dose: newDose,
+      instruction: newInstruction,
+      doses: [],
+      reminderOn: false,
+      reminderTime: "",
+      showPreview: false,
+    },
+  ]);
+
+  setNewName("");
+  setNewDose("");
+  setNewInstruction("");
+}}
+/>
 
       {meds.map((med, index) => (
         <View key={index} style={styles.medCard}>
