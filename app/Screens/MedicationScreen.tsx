@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Button, TextInput } from "react-native";
+import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { DEFAULT_MEDS } from "../../lib/defaultMeds";
 
 type Medication = {
@@ -27,7 +27,7 @@ const [newName, setNewName] = React.useState("");
 const [newDose, setNewDose] = React.useState("");
 const [newInstruction, setNewInstruction] = React.useState("");
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Medications</Text>
       <Text style={styles.subtitle}>
         {meds.length} medication{meds.length !== 1 ? "s" : ""} tracked.
@@ -76,21 +76,42 @@ onPress={() => {
 }}
 />
 
-      {meds.map((med, index) => (
-        <View key={index} style={styles.medCard}>
-          <Text style={styles.medName}>{med.name}</Text>
-          <Text style={styles.medDetail}>Dose: {med.dose}</Text>
-          <Text style={styles.medDetail}>Instruction: {med.instruction}</Text>
-        </View>
-      ))}
-    </View>
-  );
-}
+     {meds.map((med, index) => (
+  <View key={index} style={styles.medCard}>
+    <Text style={styles.medName}>{med.name}</Text>
+    <Text style={styles.medDetail}>Dose: {med.dose}</Text>
+    <Text style={styles.medDetail}>Instruction: {med.instruction}</Text>
 
+    <TouchableOpacity
+      style={styles.deleteButton}
+      onPress={() =>
+        setMeds((prev) => prev.filter((_, i) => i !== index))
+      }
+    >
+              <Text style={styles.deleteButtonText}>Delete</Text>
+        </TouchableOpacity>
+      </View>
+    ))}
+  </ScrollView>
+);
+}
 const styles = StyleSheet.create({
   container: {
     padding: 20,
   },
+  deleteButton: {
+  marginTop: 10,
+  backgroundColor: "red",
+  paddingVertical: 6,
+  paddingHorizontal: 12,
+  borderRadius: 6,
+  alignSelf: "flex-start",
+},
+deleteButtonText: {
+  color: "white",
+  fontWeight: "600",
+  fontSize: 14,
+},
   title: {
     fontSize: 22,
     fontWeight: "600",
@@ -98,11 +119,11 @@ const styles = StyleSheet.create({
   },
   input: {
   borderWidth: 1,
-  borderColor: "#ccc",
+  borderColor: "ccc",
   borderRadius: 6,
   padding: 10,
   marginTop: 10,
-  backgroundColor: "#fff",
+  backgroundColor: "white",
 },
   subtitle: {
     fontSize: 16,
