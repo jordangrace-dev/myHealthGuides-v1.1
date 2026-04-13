@@ -678,7 +678,7 @@ export default function MyMedGuide() {
     home: <HomeScreenNew />,
     signals: <SignalsScreen />,
    insight: <InsightScreenNew />,
-    medications: <MedicationScreenNew />,
+    medications: <MedicationScreenNew meds={meds} />,
    visit: <VisitScreenNew />,
   };
 

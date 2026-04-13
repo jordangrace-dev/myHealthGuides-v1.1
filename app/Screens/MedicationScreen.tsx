@@ -1,15 +1,44 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Button } from "react-native";
 
-export default function MedicationScreen() {
+type Medication = {
+  name: string;
+  dose: string;
+  instruction: string;
+  doses: {
+    time: string;
+    status: string;
+    notes: never[];
+    showNotes: boolean;
+  }[];
+  reminderOn: boolean;
+  reminderTime: string;
+  showPreview: boolean;
+};
+
+type MedicationScreenProps = {
+  meds: Medication[];
+};
+
+export default function MedicationScreen({ meds }: MedicationScreenProps) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Medications</Text>
-      <Text style={styles.subtitle}>
-        This is where medication tracking will go.
-      </Text>
-    </View>
-  );
+  <View style={styles.container}>
+    <Text style={styles.title}>Medications</Text>
+    <Text style={styles.subtitle}>
+      {meds.length} medication{meds.length !== 1 ? "s" : ""} tracked.
+    </Text>
+    
+    <Button title="Add Medication" onPress={() => {}} />
+
+    {meds.map((med, index) => (
+      <View key={index} style={styles.medCard}>
+        <Text style={styles.medName}>{med.name}</Text>
+        <Text style={styles.medDetail}>Dose: {med.dose}</Text>
+        <Text style={styles.medDetail}>Instruction: {med.instruction}</Text>
+      </View>
+    ))}
+  </View>
+);
 }
 
 const styles = StyleSheet.create({
@@ -21,8 +50,28 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 10,
   },
-  subtitle: {
-    fontSize: 16,
-    color: "#666",
-  },
+subtitle: {
+  fontSize: 16,
+  color: "gray",
+},
+medCard: {
+  backgroundColor: "white",
+  padding: 12,
+  borderRadius: 8,
+  marginTop: 12,
+  shadowColor: "black",
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.1,
+  shadowRadius: 2,
+  elevation: 2,
+},
+medName: {
+  fontSize: 18,
+  fontWeight: "600",
+  marginBottom: 4,
+},
+medDetail: {
+  fontSize: 14,
+  color: "darkgray",
+},
 });
