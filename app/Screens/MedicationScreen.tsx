@@ -33,6 +33,7 @@ const [editingIndex, setEditingIndex] = React.useState<number | null>(null);
       <Text style={styles.subtitle}>
         {meds.length} medication{meds.length !== 1 ? "s" : ""} tracked.
       </Text>
+
 <TextInput
   style={styles.input}
   placeholder="Medication Name"
@@ -58,7 +59,21 @@ const [editingIndex, setEditingIndex] = React.useState<number | null>(null);
 onPress={() => {
   if (!newName.trim()) return;
 
-  setMeds((prev) => [
+  setMeds((prev) => {
+  if (editingIndex !== null) {
+    return prev.map((item, i) =>
+      i === editingIndex
+        ? {
+            ...item,
+            name: newName,
+            dose: newDose,
+            instruction: newInstruction,
+          }
+        : item
+    );
+  }
+
+  return [
     ...prev,
     {
       name: newName,
@@ -69,11 +84,13 @@ onPress={() => {
       reminderTime: "",
       showPreview: false,
     },
-  ]);
+  ];
+});
 
-  setNewName("");
-  setNewDose("");
-  setNewInstruction("");
+setNewName("");
+setNewDose("");
+setNewInstruction("");
+setEditingIndex(null);
 }}
 />
 
@@ -120,7 +137,7 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
   marginTop: 10,
-  backgroundColor: "red",
+  backgroundColor: "lightsalmon",
   paddingVertical: 6,
   paddingHorizontal: 12,
   borderRadius: 6,
