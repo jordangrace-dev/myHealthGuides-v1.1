@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { DEFAULT_MEDS } from "../../lib/defaultMeds";
 
 type Medication = {
@@ -26,6 +26,7 @@ export default function MedicationScreen({ meds, setMeds }: MedicationScreenProp
 const [newName, setNewName] = React.useState("");
 const [newDose, setNewDose] = React.useState("");
 const [newInstruction, setNewInstruction] = React.useState("");
+const [editingIndex, setEditingIndex] = React.useState<number | null>(null);
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Medications</Text>
@@ -82,14 +83,32 @@ onPress={() => {
     <Text style={styles.medDetail}>Dose: {med.dose}</Text>
     <Text style={styles.medDetail}>Instruction: {med.instruction}</Text>
 
-    <TouchableOpacity
-      style={styles.deleteButton}
-      onPress={() =>
-        setMeds((prev) => prev.filter((_, i) => i !== index))
-      }
-    >
-              <Text style={styles.deleteButtonText}>Delete</Text>
-        </TouchableOpacity>
+<TouchableOpacity
+  style={styles.deleteButton}
+  onPress={() => {
+    setNewName(med.name);
+    setNewDose(med.dose);
+    setNewInstruction(med.instruction);
+    setEditingIndex(index);
+  }}
+>
+
+  <Text style={styles.deleteButtonText}>Edit</Text>
+</TouchableOpacity>
+
+   <TouchableOpacity
+  style={styles.deleteButton}
+  onPress={() => {
+  const confirmed = window.confirm(
+    `Are you sure you want to delete ${med.name}?`
+  );
+  if (!confirmed) return;
+
+  setMeds((prev) => prev.filter((_, i) => i !== index));
+}}
+>
+  <Text style={styles.deleteButtonText}>Delete</Text>
+</TouchableOpacity>
       </View>
     ))}
   </ScrollView>
