@@ -134,7 +134,13 @@ export default function MedicationScreen({
 )}
 
       {meds.map((med, index) => (
-        <View key={index} style={styles.medCard}>
+        <View
+  key={index}
+  style={[
+    styles.medCard,
+    editingIndex === index && styles.editingCard,
+  ]}
+>
           <Text style={styles.medName}>{med.name}</Text>
           <Text style={styles.medDetail}>Dose: {med.dose}</Text>
           <Text style={styles.medDetail}>Instruction: {med.instruction}</Text>
@@ -177,6 +183,10 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
   },
+  editingCard: {
+  borderWidth: 2,
+  borderColor: "#A67B5B",
+},
   title: {
     fontSize: 22,
     fontWeight: "600",
