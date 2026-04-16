@@ -42,7 +42,10 @@ export default function MedicationScreen({
   const scrollViewRef = React.useRef<ScrollView>(null);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+  ref={scrollViewRef}
+  contentContainerStyle={styles.container}
+>
       <Text style={styles.title}>Medications</Text>
       <Text style={styles.subtitle}>
         {meds.length} medication{meds.length !== 1 ? "s" : ""} tracked.
@@ -140,12 +143,13 @@ export default function MedicationScreen({
 
   style={styles.deleteButton}
   onPress={() => {
-    setNewName(med.name);
-    setNewDose(med.dose);
-    setNewInstruction(med.instruction);
-    setEditingIndex(index);
-    setShowForm(true);
-  }}
+  setNewName(med.name);
+  setNewDose(med.dose);
+  setNewInstruction(med.instruction);
+  setEditingIndex(index);
+  setShowForm(true);
+  scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+}}
 >
   <Text style={styles.deleteButtonText}>Edit</Text>
 </TouchableOpacity> 
