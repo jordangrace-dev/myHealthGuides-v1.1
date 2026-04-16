@@ -149,11 +149,16 @@ export default function MedicationScreen({
   <Text style={styles.deleteButtonText}>Edit</Text>
 </TouchableOpacity> 
 
-          <TouchableOpacity
+<TouchableOpacity
   style={styles.deleteButton}
- onPress={() => {
-  setMeds((prev) => prev.filter((_, i) => i !== index));
-}}
+  onPress={() => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${med.name}?`
+    );
+    if (!confirmed) return;
+
+    setMeds((prev) => prev.filter((_, i) => i !== index));
+  }}
 >
   <Text style={styles.deleteButtonText}>Delete</Text>
 </TouchableOpacity>
