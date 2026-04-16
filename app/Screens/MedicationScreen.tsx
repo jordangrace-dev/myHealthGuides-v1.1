@@ -39,6 +39,7 @@ export default function MedicationScreen({
   const [newInstruction, setNewInstruction] = React.useState("");
   const [editingIndex, setEditingIndex] = React.useState<number | null>(null);
   const [showForm, setShowForm] = React.useState(false);
+  const scrollViewRef = React.useRef<ScrollView>(null);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
