@@ -1,4 +1,5 @@
 import React from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View,
   Text,
@@ -9,8 +10,10 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
+const STORAGE_KEY = 'MY_HEALTH_GUIDE_MEDICATIONS';
 
 type Medication = {
+  id: string;
   name: string;
   dose: string;
   instruction: string;
@@ -37,8 +40,49 @@ export default function MedicationScreen({
   const [newName, setNewName] = React.useState("");
   const [newDose, setNewDose] = React.useState("");
   const [newInstruction, setNewInstruction] = React.useState("");
-  const [editingIndex, setEditingIndex] = React.useState<number | null>(null);
+  const [editingId, setEditingId] = React.useState<string | null>(null);
   const [showForm, setShowForm] = React.useState(false);
+  const [isLoaded, setIsLoaded] = React.useState(false);
+
+React.useEffect(() => {
+  const loadMedications = async () => {
+    try {
+      const storedMeds = await AsyncStorage.getItem(STORAGE_KEY);
+      if (storedMeds) {
+        setMeds(
+  JSON.parse(storedMeds).map((med: any, index: number) => ({
+    ...med,
+    id: med.id ?? `${Date.now()}-${index}`,
+  }))
+);
+      }
+    } catch (error) {
+      console.error('Error loading medications:', error);
+    } finally {
+      setIsLoaded(true);
+    }
+  };
+
+  loadMedications();
+}, []);
+
+
+React.useEffect(() => {
+  if (!isLoaded) return;
+
+  const saveMedications = async () => {
+    try {
+      await AsyncStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(meds)
+      );
+    } catch (error) {
+      console.error('Error saving medications:', error);
+    }
+  };
+
+  saveMedications();
+}, [meds, isLoaded]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -51,7 +95,7 @@ export default function MedicationScreen({
   style={styles.primaryButton}
   onPress={() => {
     setShowForm(true);
-    setEditingIndex(null);
+    setEditingId(null);
     setNewName("");
     setNewDose("");
     setNewInstruction("");
@@ -88,71 +132,71 @@ export default function MedicationScreen({
     if (!newName.trim()) return;
 
     setMeds((prev) => {
-      if (editingIndex !== null) {
-        return prev.map((item, i) =>
-          i === editingIndex
-            ? {
-                ...item,
-                name: newName,
-                dose: newDose,
-                instruction: newInstruction,
-              }
-            : item
-        );
-      }
-
-      return [
-        ...prev,
-        {
+    if (editingId !== null) {
+  return prev.map((item) =>
+    item.id === editingId
+      ? {
+          ...item,
           name: newName,
           dose: newDose,
           instruction: newInstruction,
-          doses: [],
-          reminderOn: false,
-          reminderTime: "",
-          showPreview: false,
-        },
-      ];
+        }
+      : item
+  );
+}
+      return [
+  ...prev,
+  {
+    id: Date.now().toString(),
+    name: newName,
+    dose: newDose,
+    instruction: newInstruction,
+    doses: [],
+    reminderOn: false,
+    reminderTime: "",
+    showPreview: false,
+  },
+];
     });
 
     setNewName("");
     setNewDose("");
     setNewInstruction("");
-    setEditingIndex(null);
+    setEditingId(null);
     setShowForm(false);
   }}
 >
   <Text style={styles.primaryButtonText}>
-    {editingIndex !== null ? "Save Changes" : "Save Medication"}
+    {editingId !== null ? "Save Changes" : "Save Medication"}
   </Text>
 </TouchableOpacity>
   </>
 )}
 
-      {meds.map((med, index) => (
-        <View key={index} style={styles.medCard}>
+     {meds.map((med, index) => (
+  <View key={med.id} style={styles.medCard}>
           <Text style={styles.medName}>{med.name}</Text>
           <Text style={styles.medDetail}>Dose: {med.dose}</Text>
           <Text style={styles.medDetail}>Instruction: {med.instruction}</Text>
 
-         <TouchableOpacity
-
+        <TouchableOpacity
   style={styles.deleteButton}
   onPress={() => {
     setNewName(med.name);
     setNewDose(med.dose);
     setNewInstruction(med.instruction);
-    setEditingIndex(index);
+    setEditingId(med.id);
     setShowForm(true);
   }}
 >
   <Text style={styles.deleteButtonText}>Edit</Text>
-</TouchableOpacity> 
+</TouchableOpacity>
 
-          <TouchableOpacity
+     <TouchableOpacity
   style={styles.deleteButton}
- onPress={() => {
-  setMeds((prev) => prev.filter((_, i) => i !== index));
+  activeOpacity={0.7}
+onPress={() => {
+  setMeds((prev) => prev.filter((item) => item.id !== med.id));
 }}
 >
   <Text style={styles.deleteButtonText}>Delete</Text>
@@ -205,21 +249,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "darkgray",
   },
-  deleteButton: {
-    marginTop: 10,
-    backgroundColor: "lightsalmon",
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 6,
-    alignSelf: "flex-start",
-  },
+ deleteButton: {
+  marginTop: 10,
+  backgroundColor: "lightsalmon",
+  paddingVertical: 6,
+  paddingHorizontal: 12,
+  borderRadius: 6,
+  alignSelf: "flex-start",
+  zIndex: 1,
+  elevation: 1, // For Android
+},
   deleteButtonText: {
     color: "white",
     fontWeight: "600",
     fontSize: 14,
   },
   primaryButton: {
-  backgroundColor: "#A67B5B", // light sienna tone
+  backgroundColor: "light sienna", // light sienna tone
   paddingVertical: 10,
   paddingHorizontal: 16,
   borderRadius: 8,
@@ -229,7 +275,7 @@ const styles = StyleSheet.create({
 },
 
 primaryButtonText: {
-  color: "#FFFFFF",
+  color: "White",
   fontSize: 14,
   fontWeight: "600",
 },
